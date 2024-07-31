@@ -1,6 +1,6 @@
 from pathlib import Path
 from config import get_config
-from data.data_pipe import load_bin, load_mx_rec
+from utils.data_pipe import load_bin, load_mx_rec
 import argparse
 
 if __name__ == '__main__':
@@ -9,7 +9,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     conf = get_config()
     rec_path = conf.data_path/args.rec_path
-    load_mx_rec(rec_path)
+    # load_mx_rec(rec_path)
     
     bin_files = ['agedb_30', 'cfp_fp', 'lfw', 'calfw', 'cfp_ff', 'cplfw', 'vgg2_fp']
     

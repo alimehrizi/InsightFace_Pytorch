@@ -1,4 +1,4 @@
-from data.data_pipe import de_preprocess, get_train_loader, get_val_data
+from utils.data_pipe import de_preprocess, get_train_loader, get_val_data
 from model import Backbone, Arcface, MobileFaceNet, Am_softmax, l2_norm
 from verifacation import evaluate
 import torch
@@ -8,7 +8,7 @@ from tqdm import tqdm
 from tensorboardX import SummaryWriter
 from matplotlib import pyplot as plt
 plt.switch_backend('agg')
-from utils import get_time, gen_plot, hflip_batch, separate_bn_paras
+from utils.utils import get_time, gen_plot, hflip_batch, separate_bn_paras
 from PIL import Image
 from torchvision import transforms as trans
 import math
@@ -73,6 +73,18 @@ class face_learner(object):
             torch.save(
                 self.optimizer.state_dict(), save_path /
                 ('optimizer_{}_accuracy:{}_step:{}_{}.pth'.format(get_time(), accuracy, self.step, extra)))
+
+    
+    
+    def load_weights(self, conf, fixed_str, model_only=False):         
+        save_path = conf.checkpoint_dir
+        self.model.load_state_dict(torch.load(save_path/'model_{}'.format(fixed_str)),strict=True)
+        try:
+            self.head.load_state_dict(torch.load(save_path/'head_{}'.format(fixed_str)),strict=True)
+            print("Head parameters have been loaded.")
+        except:
+            print("Can not load Head parameters") 
+        print("Model parameters have been loaded.")
     
     def load_state(self, conf, fixed_str, from_save_folder=False, model_only=False):
         if from_save_folder:

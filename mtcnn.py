@@ -35,7 +35,7 @@ class MTCNN():
             facial5points = [[landmark[j],landmark[j+5]] for j in range(5)]
             warped_face = warp_and_crop_face(np.array(img), facial5points, self.refrence, crop_size=(112,112))
             faces.append(Image.fromarray(warped_face))
-        return boxes, faces
+        return boxes, faces, landmarks
 
     def detect_faces(self, image, min_face_size=20.0,
                      thresholds=[0.6, 0.7, 0.8],
@@ -122,6 +122,7 @@ class MTCNN():
             # STAGE 3
 
             img_boxes = get_image_boxes(bounding_boxes, image, size=48)
+            print("Here = ", img_boxes.shape, len(bounding_boxes))
             if len(img_boxes) == 0: 
                 return [], []
             img_boxes = torch.FloatTensor(img_boxes).to(device)

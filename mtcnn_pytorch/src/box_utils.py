@@ -151,7 +151,9 @@ def get_image_boxes(bounding_boxes, img, size=24):
 
         # resize
         img_box = Image.fromarray(img_box)
+        print(img_box.size)
         img_box = img_box.resize((size, size), Image.BILINEAR)
+        img_box.save(str(i)+"_face.jpg")
         img_box = np.asarray(img_box, 'float32')
 
         img_boxes[i, :, :, :] = _preprocess(img_box)

@@ -6,11 +6,13 @@ from torchvision import transforms as trans
 
 def get_config(training = True):
     conf = edict()
-    conf.data_path = Path('data')
-    conf.work_path = Path('work_space/')
+    conf.data_path = Path('/mnt/SSD4/Datasets/FaceRecognition')
+    conf.work_path = Path('/home/konect/Models/Insight_Face/')
     conf.model_path = conf.work_path/'models'
     conf.log_path = conf.work_path/'log'
     conf.save_path = conf.work_path/'save'
+    conf.checkpoint_dir = Path("/home/konect/Models/Insight_Face_run2/save")
+    conf.checkpoint_prefix = "final.pth"
     conf.input_size = [112,112]
     conf.embedding_size = 512
     conf.use_mobilfacenet = False

@@ -1,6 +1,7 @@
 from config import get_config
 from Learner import face_learner
 import argparse
+import os 
 
 # python train.py -net mobilefacenet -b 200 -w 4
 
@@ -27,6 +28,11 @@ if __name__ == '__main__':
     conf.batch_size = args.batch_size
     conf.num_workers = args.num_workers
     conf.data_mode = args.data_mode
+    if not os.path.exists(conf.save_path):
+        os.makedirs(conf.save_path)
+    if not os.path.exists(conf.model_path):
+        os.makedirs(conf.model_path)
     learner = face_learner(conf)
+    # learner.load_weights(conf,conf.checkpoint_prefix)
 
     learner.train(conf, args.epochs)

@@ -258,7 +258,7 @@ def warp_and_crop_face(src_img,
                                                         inner_padding_factor,
                                                         outer_padding,
                                                         default_square)
-
+    print(reference_pts)
     ref_pts = np.float32(reference_pts)
     ref_pts_shp = ref_pts.shape
     if max(ref_pts_shp) < 3 or min(ref_pts_shp) != 2:

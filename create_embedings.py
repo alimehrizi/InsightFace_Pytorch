@@ -18,9 +18,9 @@ def calculate_distance(feat1, feat2, metric):
 
 
 
-def preprocess(image , img_size):
+def preprocess(img , img_size):
     
-    img = cv.resize(image , (img_size[0] , img_size[1]))
+    img = cv.resize(img , (img_size[0] , img_size[1]),interpolation=cv.INTER_LINEAR)
     img = img.astype("float32").transpose(2 , 0 , 1)[np.newaxis]/255.0
     return img 
 
@@ -32,17 +32,17 @@ def postprocess(feat):
 
 
 def load_img(img_path ):
-    img = cv.imread(img_path)
-    image = cv.cvtColor(img , cv.COLOR_BGR2RGB)
+    img = cv.imread(img_path,cv.IMREAD_COLOR)
+    img = cv.cvtColor(img , cv.COLOR_BGR2RGB)
     return img 
 
 
 def parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gallery" , type=str, default= "/home/altex/Desktop/PersonRegistorySampleVideos/SharifCameras/21/1/2024-06-02_15_20_16/CameraEvent_2024-06-02 15:20:15#1091277/0/"),
-    parser.add_argument("--model" , type=str,default="models/model_ir_se50.onnx" ),
+    parser.add_argument("--gallery" , type=str, default= "/home/altex/Desktop/PersonRegistorySampleVideos/SharifCameras/24/2024-06-05_19_55_33/cam4_3/sample"),
+    parser.add_argument("--model" , type=str,default="/home/altex/Models/insightface_models/glint360k_r18.onnx" ),
     parser.add_argument("--runtime" , type=str,default="onnx" ),
-    parser.add_argument("--result", type=str,default="outputs_onnx" )
+    parser.add_argument("--result", type=str,default="/home/altex/Desktop/PersonRegistorySampleVideos/SharifCameras/24/2024-06-05_19_55_33/cam4_3/sample/py" )
 
     return parser
 
@@ -73,15 +73,18 @@ if __name__=="__main__":
         if True:
             try:
                 image = Image.open(img_path)
-                bboxes, faces = mtcnn.align_multi(image, 10, 16,)
+                
+                bboxes, faces,landmarks = mtcnn.align_multi(image, 10, 16,)
                 # k_img = load_img(img_path , [112,112]) 
                 j = 0
-                for face,bbox in zip(faces,bboxes):
+                for face,bbox,landmark in zip(faces,bboxes,landmarks):
+                    # print("BBox = ",bbox)
+                    # print("LMK = ",landmark)
                     bbox = np.int32(bbox)
                     oface = np.array(image)[bbox[1]:bbox[3],bbox[0]:bbox[2]]
                     face = np.array(face)
-                    face_path = "/home/altex/Codes/FaceRecognition_Detection/InsightFace_Pytorch/data/"+str(j)+"_"+img_path.split('/')[-1]
-                    cv.imwrite(face_path,cv.cvtColor(face,cv.COLOR_RGB2BGR) )
+                    face_path = "/home/altex/Desktop/PersonRegistorySampleVideos/SharifCameras/24/2024-06-05_19_55_33/cam4_3/sample//"+str(j)+"_"+img_path.split('/')[-1]
+                    # cv.imwrite(face_path,cv.cvtColor(face,cv.COLOR_RGB2BGR) )
                     j+=1
                     face = preprocess(face,[112,112])
                     k_feat = model(face) 
@@ -93,10 +96,12 @@ if __name__=="__main__":
                 continue
         else:
             face = load_img(img_path)
+            # cv.imwrite("resized.jpg",face);
             # cv.imwrite("data/"+img_path.split('/')[-1],face)
             face = preprocess(face,[112,112])
             k_feat = model(face) 
-        # k_feat = postprocess(k_feat)  
+            # k_feat = postprocess(k_feat)  
+            print(k_feat)
             features.append(k_feat)
             files.append(img_path)
 
